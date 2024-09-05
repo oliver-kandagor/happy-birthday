@@ -299,7 +299,7 @@ const animationTimeline = () => {
   // Restart Animation on click
   const replyBtn = document.getElementById("replay");
   replyBtn.addEventListener("click", () => {
-    tl.restart();
+    window.location.reload();
   });
 };
 
@@ -307,7 +307,160 @@ const animationTimeline = () => {
 
 const startParty = () => {
   fetchData();
+  conveti();
   document.getElementById('audio').play();
   document.getElementById('audio').controls = false;
   document.getElementById('containerzero').style.display = 'none';
+}
+
+// Set the date we're counting down to
+let countDownDate = new Date("Sep 5, 2024 00:00:00").getTime();
+
+// Update the count down every 1 second
+let x = setInterval(function () {
+
+  // Get today's date and time
+  let now = new Date().getTime();
+
+  // Find the distance between now and the count down date
+  let distance = countDownDate - now;
+
+  // Time calculations for days, hours, minutes and seconds
+  let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // Output the result in an element with id="demo"
+  document.getElementById("actionbtn").innerHTML = days + "d " + hours + "h "
+      + minutes + "m " + seconds + "s ";
+  // enable the button if the time is up
+  if (distance < 0) {
+    document.getElementById("actionbtn").innerHTML = `
+        <div class="cake">
+            <div class="plate"></div>
+            <div class="layer layer-bottom"></div>
+            <div class="layer layer-middle"></div>
+            <div class="layer layer-top"></div>
+            <div class="icing"></div>
+            <div class="drip drip1"></div>
+            <div class="drip drip2"></div>
+            <div class="drip drip3"></div>
+            <div class="candle">
+                <div class="flame"></div>
+            </div>
+            <div class="prompt">
+            Coba pencet deh
+            </div>
+        </div>
+    `;
+    document.getElementById("actionbtn").disabled = false;
+  }
+}, 1000);
+
+
+function conveti() {
+  let W = window.innerWidth;
+  let H = window.innerHeight;
+  const canvas = document.getElementById("canvas");
+  const context = canvas.getContext("2d");
+  const maxConfettis = 150;
+  const particles = [];
+
+  const possibleColors = [
+    "DodgerBlue",
+    "OliveDrab",
+    "Gold",
+    "Pink",
+    "SlateBlue",
+    "LightBlue",
+    "Gold",
+    "Violet",
+    "PaleGreen",
+    "SteelBlue",
+    "SandyBrown",
+    "Chocolate",
+    "Crimson"
+  ];
+
+  function randomFromTo(from, to) {
+    return Math.floor(Math.random() * (to - from + 1) + from);
+  }
+
+  function confettiParticle() {
+    this.x = Math.random() * W; // x
+    this.y = Math.random() * H - H; // y
+    this.r = randomFromTo(11, 33); // radius
+    this.d = Math.random() * maxConfettis + 11;
+    this.color =
+        possibleColors[Math.floor(Math.random() * possibleColors.length)];
+    this.tilt = Math.floor(Math.random() * 33) - 11;
+    this.tiltAngleIncremental = Math.random() * 0.07 + 0.05;
+    this.tiltAngle = 0;
+
+    this.draw = function () {
+      context.beginPath();
+      context.lineWidth = this.r / 2;
+      context.strokeStyle = this.color;
+      context.moveTo(this.x + this.tilt + this.r / 3, this.y);
+      context.lineTo(this.x + this.tilt, this.y + this.tilt + this.r / 5);
+      return context.stroke();
+    };
+  }
+
+  function Draw() {
+    const results = [];
+
+    // Magical recursive functional love
+    requestAnimationFrame(Draw);
+
+    context.clearRect(0, 0, W, window.innerHeight);
+
+    for (var i = 0; i < maxConfettis; i++) {
+      results.push(particles[i].draw());
+    }
+
+    let particle = {};
+    let remainingFlakes = 0;
+    for (var i = 0; i < maxConfettis; i++) {
+      particle = particles[i];
+
+      particle.tiltAngle += particle.tiltAngleIncremental;
+      particle.y += (Math.cos(particle.d) + 3 + particle.r / 2) / 2;
+      particle.tilt = Math.sin(particle.tiltAngle - i / 3) * 15;
+
+      if (particle.y <= H) remainingFlakes++;
+
+      // If a confetti has fluttered out of view,
+      // bring it back to above the viewport and let if re-fall.
+      if (particle.x > W + 30 || particle.x < -30 || particle.y > H) {
+        particle.x = Math.random() * W;
+        particle.y = -30;
+        particle.tilt = Math.floor(Math.random() * 10) - 20;
+      }
+    }
+
+    return results;
+  }
+
+  window.addEventListener(
+      "resize",
+      function () {
+        W = window.innerWidth;
+        H = window.innerHeight;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      },
+      false
+  );
+
+// Push new confetti objects to `particles[]`
+  for (var i = 0; i < maxConfettis; i++) {
+    particles.push(new confettiParticle());
+  }
+
+// Initialize
+  canvas.width = W;
+  canvas.height = H;
+  Draw();
 }
