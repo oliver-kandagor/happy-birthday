@@ -74,7 +74,7 @@ const animationTimeline = () => {
             opacity: 0,
             y: 10
           },
-          "+=5"
+          "+=2"
       )
       .to(
           ".two",
@@ -314,7 +314,7 @@ const startParty = () => {
 }
 
 // Set the date we're counting down to
-let countDownDate = new Date("Sep 5, 2024 00:00:00").getTime();
+let countDownDate = new Date("Sep 6, 2024 00:00:00").getTime();
 
 // Update the count down every 1 second
 let x = setInterval(function () {
@@ -364,7 +364,7 @@ function conveti() {
   let H = window.innerHeight;
   const canvas = document.getElementById("canvas");
   const context = canvas.getContext("2d");
-  const maxConfettis = 150;
+  const maxConfettis = 50;
   const particles = [];
 
   const possibleColors = [
